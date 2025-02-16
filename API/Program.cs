@@ -14,6 +14,7 @@ builder.Services.AddMediatR(options => options.RegisterServicesFromAssembly(type
 
 var app = builder.Build();
 
+app.UseCors(options => options.AllowAnyHeader().WithOrigins("http://localhost:3000", "https://localhost:3000"));
 app.MapControllers();
 
 using var scope = app.Services.CreateScope();

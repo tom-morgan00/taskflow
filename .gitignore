@@ -485,3 +485,6 @@ $RECYCLE.BIN/
 
 # Other
 API/appsettings.json
+API/taskflow.db
+API/taskflow.db-shm
+API/taskflow.db-wal

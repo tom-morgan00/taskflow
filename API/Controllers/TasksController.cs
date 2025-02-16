@@ -1,27 +1,30 @@
+using Application.Tasks.Queries;
 using Domain;
-using Microsoft.AspNetCore.Http;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Persistence;
 
 namespace API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class TasksController(AppDbContext context): ControllerBase
+    public class TasksController(): ControllerBase
     {
+        private IMediator? _mediator;
+        protected IMediator Mediator => _mediator ??= HttpContext.RequestServices.GetService<IMediator>()
+                ?? throw new InvalidOperationException("IMediator service is unavailable.");
+
         [HttpGet]
-        public async Task<ActionResult<List<TaskItem>>> GetTasks()
+        public async Task<ActionResult<List<TaskItem>>> GetAllTasks()
         {
-            return await context.Tasks.ToListAsync();
+            var tasks = await Mediator.Send(new GetAllTasks.Query());
+            return Ok(tasks);
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<TaskItem>> GetTaskDetails(string id)
+        public async Task<ActionResult<TaskItem>> GetTaskById(string id)
         {
-            var activity = await context.Tasks.FindAsync(id);
-            if (activity == null) return NotFound();
-            return activity;
+            var task = await Mediator.Send(new GetTaskById.Query{ Id = id });
+            return Ok(task);
         }
     }
 }

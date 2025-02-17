@@ -1,18 +1,13 @@
 using Application.Tasks.Queries;
 using Domain;
-using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class TasksController(): ControllerBase
+    public class TasksController(): BaseApiController
     {
-        private IMediator? _mediator;
-        protected IMediator Mediator => _mediator ??= HttpContext.RequestServices.GetService<IMediator>()
-                ?? throw new InvalidOperationException("IMediator service is unavailable.");
-
         [HttpGet]
         public async Task<ActionResult<List<TaskItem>>> GetAllTasks()
         {

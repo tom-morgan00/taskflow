@@ -17,6 +17,7 @@
 
   <ItemGroup>
     <Folder Include="Tasks\Commands\" />
+    <Folder Include="Workspaces\Commands\" />
   </ItemGroup>
 
 </Project>

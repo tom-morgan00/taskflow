@@ -5,4 +5,11 @@ type Task = {
   status: number;
   dueDate?: string;
   createdAt: string;
+  workspace: Workspace;
+};
+
+type Workspace = {
+  id: string;
+  name: string;
+  createdAt: string;
 };

@@ -17,62 +17,54 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import { Link } from "react-router";
-
-const data = {
-  user: {
-    name: "shadcn",
-    email: "m@example.com",
-    avatar: "/avatars/shadcn.jpg",
-  },
-  navMain: [
-    {
-      title: "Dashboard",
-      url: "/app",
-      icon: LayoutDashboard,
-      isActive: true,
-    },
-    {
-      title: "My Tasks",
-      url: "/app/my-tasks",
-      icon: CheckCircle,
-      isActive: false,
-    },
-    {
-      title: "Workspaces",
-      url: "/app/workspaces",
-      icon: ClipboardList,
-      isActive: false,
-      items: [
-        {
-          title: "Project 1",
-          url: "/app/workspaces/project-1",
-        },
-        {
-          title: "Project 2",
-          url: "/app/workspaces/project-2",
-        },
-        {
-          title: "Project 3",
-          url: "/app/workspaces/project-3",
-        },
-      ],
-    },
-  ],
-  // navSecondary: [
-  //   {
-  //     title: "Support",
-  //     url: "#",
-  //     icon: LifeBuoy,
-  //   },
-  //   {
-  //     title: "Feedback",
-  //     url: "#",
-  //     icon: Send,
-  //   },
-  // ],
-};
+import useWorkspaces from "@/hooks/useWorkspaces";
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const { workspaces } = useWorkspaces();
+
+  const data = {
+    user: {
+      name: "shadcn",
+      email: "m@example.com",
+      avatar: "/avatars/shadcn.jpg",
+    },
+    navMain: [
+      {
+        title: "Dashboard",
+        url: "/app",
+        icon: LayoutDashboard,
+        isActive: true,
+      },
+      {
+        title: "My Tasks",
+        url: "/app/my-tasks",
+        icon: CheckCircle,
+        isActive: false,
+      },
+      {
+        title: "Workspaces",
+        url: "/app/workspaces",
+        icon: ClipboardList,
+        isActive: false,
+        items: workspaces?.map((workspace) => ({
+          title: workspace.name,
+          url: `/app/workspaces/${workspace.id}`,
+        })),
+      },
+    ],
+    // navSecondary: [
+    //   {
+    //     title: "Support",
+    //     url: "#",
+    //     icon: LifeBuoy,
+    //   },
+    //   {
+    //     title: "Feedback",
+    //     url: "#",
+    //     icon: Send,
+    //   },
+    // ],
+  };
   return (
     <Sidebar variant="inset" {...props}>
       <SidebarHeader>

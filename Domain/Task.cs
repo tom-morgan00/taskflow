@@ -10,6 +10,7 @@ public class TaskItem
     public required TaskItemStatus Status { get; set; } = TaskItemStatus.Todo;
     public DateTime DueDate { get; set; }
     public required DateTime CreatedAt { get; set; } = DateTime.Now;
+    public required Workspace Workspace { get; set; }
 }
 
 public enum TaskItemStatus

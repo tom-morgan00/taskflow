@@ -1,7 +1,9 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
+import AppLayout from "../layout/AppLayout";
+import { Outlet } from "react-router";
 
-function App() {
+export default function AppPage() {
   const [tasks, setTasks] = useState<Task[]>([]);
   useEffect(() => {
     async function getTasks() {
@@ -14,12 +16,8 @@ function App() {
 
   if (!tasks) return <p>No tasks.</p>;
   return (
-    <>
-      {tasks.map((task) => (
-        <p key={task.id}>{task.name}</p>
-      ))}
-    </>
+    <AppLayout>
+      <Outlet />
+    </AppLayout>
   );
 }
-
-export default App;

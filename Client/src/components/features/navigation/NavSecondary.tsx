@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/sidebar";
 import { Link } from "react-router";
 
-export function NavSecondary({
+export default function NavSecondary({
   items,
   ...props
 }: {

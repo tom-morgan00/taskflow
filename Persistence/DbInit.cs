@@ -5,12 +5,13 @@ namespace Persistence;
 
 public class DbInit
 {
-    
-    public static async Task SeedData(AppDbContext context) 
+
+    public static async Task SeedData(AppDbContext context)
     {
         if (context.Tasks.Any()) return;
 
-        var workspace = new Workspace{
+        var workspace = new Workspace
+        {
             Name = "Tom's Workspace",
             CreatedAt = DateTime.Now.AddMonths(-2)
         };
@@ -26,7 +27,7 @@ public class DbInit
                 Status = TaskItemStatus.Todo,
                 DueDate = DateTime.Now.AddDays(7),
                 CreatedAt = DateTime.Now.AddMonths(-2),
-                Workspace = workspace
+                WorkspaceId = workspace.Id,
             },
             new TaskItem
             {
@@ -35,7 +36,7 @@ public class DbInit
                 Status = TaskItemStatus.InProgress,
                 DueDate = DateTime.Now.AddDays(14),
                 CreatedAt = DateTime.Now.AddMonths(-1),
-                Workspace = workspace
+                WorkspaceId = workspace.Id,
             },
             new TaskItem
             {
@@ -44,7 +45,7 @@ public class DbInit
                 Status = TaskItemStatus.Done,
                 DueDate = DateTime.Now.AddDays(-5),
                 CreatedAt = DateTime.Now.AddMonths(-3),
-                Workspace = workspace
+                WorkspaceId = workspace.Id,
             },
             new TaskItem
             {
@@ -53,7 +54,7 @@ public class DbInit
                 Status = TaskItemStatus.Todo,
                 DueDate = DateTime.Now.AddDays(21),
                 CreatedAt = DateTime.Now.AddMonths(-1),
-                Workspace = workspace
+                WorkspaceId = workspace.Id,
             },
             new TaskItem
             {
@@ -62,7 +63,7 @@ public class DbInit
                 Status = TaskItemStatus.InProgress,
                 DueDate = DateTime.Now.AddDays(10),
                 CreatedAt = DateTime.Now.AddDays(-20),
-                Workspace = workspace
+                WorkspaceId = workspace.Id,
             }
         };
 

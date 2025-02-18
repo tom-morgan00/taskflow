@@ -18,7 +18,7 @@ import {
 } from "@/components/ui/sidebar";
 import { Link } from "react-router";
 
-export function NavUser({
+export default function NavUser({
   user,
 }: {
   user: {

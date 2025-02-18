@@ -39,6 +39,7 @@ namespace Persistence.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("WorkspaceId")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
@@ -68,10 +69,17 @@ namespace Persistence.Migrations
             modelBuilder.Entity("Domain.TaskItem", b =>
                 {
                     b.HasOne("Domain.Workspace", "Workspace")
-                        .WithMany()
-                        .HasForeignKey("WorkspaceId");
+                        .WithMany("Tasks")
+                        .HasForeignKey("WorkspaceId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Workspace");
+                });
+
+            modelBuilder.Entity("Domain.Workspace", b =>
+                {
+                    b.Navigation("Tasks");
                 });
 #pragma warning restore 612, 618
         }

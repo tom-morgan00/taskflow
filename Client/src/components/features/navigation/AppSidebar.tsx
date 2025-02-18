@@ -5,8 +5,8 @@ import {
   LayoutDashboard,
 } from "lucide-react";
 
-import { NavMain } from "@/components/nav-main";
-import { NavUser } from "@/components/nav-user";
+import NavMain from "@/components/features/navigation/NavMain";
+import NavUser from "@/components/features/navigation/NavUser";
 import {
   Sidebar,
   SidebarContent,
@@ -17,9 +17,11 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import { Link } from "react-router";
-import useWorkspaces from "@/hooks/useWorkspaces";
+import useWorkspaces from "@/lib/hooks/useWorkspaces";
 
-export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+export default function AppSidebar({
+  ...props
+}: React.ComponentProps<typeof Sidebar>) {
   const { workspaces } = useWorkspaces();
 
   const data = {
@@ -46,10 +48,11 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         url: "/app/workspaces",
         icon: ClipboardList,
         isActive: false,
-        items: workspaces?.map((workspace) => ({
-          title: workspace.name,
-          url: `/app/workspaces/${workspace.id}`,
-        })),
+        items:
+          workspaces?.data?.map((workspace) => ({
+            title: workspace.name,
+            url: `/app/workspaces/${workspace.id}`,
+          })) || [],
       },
     ],
     // navSecondary: [

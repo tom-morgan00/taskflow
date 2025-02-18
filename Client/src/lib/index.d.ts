@@ -12,4 +12,5 @@ type Workspace = {
   id: string;
   name: string;
   createdAt: string;
+  tasks: Task[];
 };

@@ -1,4 +1,5 @@
 using System;
+using System.Text.Json.Serialization;
 
 namespace Domain;
 
@@ -9,8 +10,10 @@ public class TaskItem
     public string? Description { get; set; }
     public required TaskItemStatus Status { get; set; } = TaskItemStatus.Todo;
     public DateTime DueDate { get; set; }
-    public required DateTime CreatedAt { get; set; } = DateTime.Now;
-    public required Workspace Workspace { get; set; }
+    public required DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+    public required string WorkspaceId { get; set; }
+    [JsonIgnore]
+    public Workspace Workspace { get; set; } = null!;
 }
 
 public enum TaskItemStatus

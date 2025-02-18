@@ -1,14 +1,16 @@
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
 import useWorkspaces from "@/lib/hooks/useWorkspaces";
 import { PlusIcon } from "lucide-react";
-import { Link, useParams } from "react-router";
+import { useParams } from "react-router";
+import { TaskTable } from "@/components/features/tasks/table/TaskTable";
+import { columns } from "@/components/features/tasks/table/Columns";
+import TaskForm from "../tasks/TaskForm";
+import { useStore } from "@/lib/store";
 
 export default function WorkspaceList() {
-  const { id } = useParams();
-  console.log(id);
-  const { workspace, isLoadingWorkspace } = useWorkspaces(id);
-  console.log(workspace);
+  const { id: workspaceId } = useParams();
+  const { workspace, isLoadingWorkspace } = useWorkspaces(workspaceId);
+  const { setTaskFormOpen } = useStore();
 
   if (isLoadingWorkspace) {
     return <div>Loading...</div>;
@@ -20,25 +22,15 @@ export default function WorkspaceList() {
 
   return (
     <main className="flex flex-col gap-4">
+      <TaskForm workspace={workspace} />
       <div className="flex justify-between">
         <h1 className="text-2xl">{workspace.name}</h1>
-        <Button onClick={() => alert("Add new task")}>
+        <Button onClick={() => setTaskFormOpen(true)}>
           <PlusIcon /> New task
         </Button>
       </div>
       <div className="flex flex-col gap-2">
-        {workspace.tasks.length > 0 &&
-          workspace.tasks.map((task) => (
-            <Link to={`/app/workspaces/${task.id}`}>
-              <Card className="w-full p-4 flex gap-4 hover:shadow-md">
-                <div className="">
-                  <p className="bold">{task.name}</p>
-                  <p className="bold">{task.status}</p>
-                  <p className="bold">{task.dueDate}</p>
-                </div>
-              </Card>
-            </Link>
-          ))}
+        <TaskTable data={workspace.tasks} columns={columns} />
       </div>
     </main>
   );

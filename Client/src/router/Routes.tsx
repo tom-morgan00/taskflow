@@ -6,6 +6,7 @@ import SignupForm from "@/components/features/auth/SignupForm";
 import ForgotPasswordForm from "@/components/features/auth/ForgotPasswordForm";
 import WorkspaceList from "@/components/features/workspaces/WorkspaceList";
 import WorkspaceView from "@/components/features/workspaces/WorkspaceView";
+import BearTest from "@/components/features/BearTest";
 
 export const router = createBrowserRouter([
   {
@@ -39,6 +40,7 @@ export const router = createBrowserRouter([
     children: [
       { path: "", element: <>Dashboard</> },
       { path: "my-tasks", element: <>My Tasks</> },
+      { path: "bears", element: <BearTest /> },
       { path: "workspaces/", element: <WorkspaceList /> },
       { path: "workspaces/:id", element: <WorkspaceView /> },
       { path: "notifications/", element: <>Notifications</> },

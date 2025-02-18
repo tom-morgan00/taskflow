@@ -2,10 +2,10 @@ type Task = {
   id: string;
   name: string;
   description?: string;
-  status: number;
+  status: "ToDo" | "InProgress" | "Done";
   dueDate?: string;
   createdAt: string;
-  workspace: Workspace;
+  workspaceId: string;
 };
 
 type Workspace = {

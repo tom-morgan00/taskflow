@@ -20,14 +20,14 @@ namespace API.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Workspace>> GetWorkspaceById(string id)
         {
-            var workspace = await Mediator.Send(new GetWorkspaceById.Query{ Id = id });
+            var workspace = await Mediator.Send(new GetWorkspaceById.Query { Id = id });
             return Ok(workspace);
         }
 
         [HttpPost]
         public async Task<ActionResult<Workspace>> CreateWorkspace(CreateWorkspaceDto createWorkspaceDto)
         {
-            var workspace = await Mediator.Send(new CreateWorkspace.Command{ CreateWorkspaceDto = createWorkspaceDto });
+            var workspace = await Mediator.Send(new CreateWorkspace.Command { CreateWorkspaceDto = createWorkspaceDto });
             return Ok(workspace);
         }
     }

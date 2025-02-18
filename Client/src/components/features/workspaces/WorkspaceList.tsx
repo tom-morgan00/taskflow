@@ -5,13 +5,13 @@ import { Image, PlusIcon } from "lucide-react";
 import { Link } from "react-router";
 
 export default function WorkspaceList() {
-  const { workspaces } = useWorkspaces();
+  const { workspaces, isLoadingWorkspaces } = useWorkspaces();
 
-  if (workspaces.isLoading) {
+  if (isLoadingWorkspaces) {
     return <div>Loading...</div>;
   }
 
-  if (!workspaces.data) {
+  if (!workspaces) {
     return <div>Workspaces not found.</div>;
   }
   return (
@@ -23,7 +23,7 @@ export default function WorkspaceList() {
         </Button>
       </div>
       <div className="flex flex-col gap-2">
-        {workspaces.data.map((workspace) => (
+        {workspaces.map((workspace) => (
           <Link to={`/app/workspaces/${workspace.id}`}>
             <Card className="w-full p-4 flex gap-4 hover:shadow-md">
               <Image />

@@ -11,15 +11,18 @@ export default function useWorkspaces(id?: string) {
   });
 
   const getWorkspaceById = useQuery({
-    queryKey: ["workspaces"],
+    queryKey: ["workspaces", id],
     queryFn: async () => {
       const result = await agent.get<Workspace>(`/workspaces/${id}`);
       return result.data;
     },
+    enabled: !!id,
   });
 
   return {
-    workspaces: getWorkspaces,
-    workspace: getWorkspaceById,
+    workspaces: getWorkspaces.data,
+    isLoadingWorkspaces: getWorkspaces.isLoading,
+    workspace: getWorkspaceById.data,
+    isLoadingWorkspace: getWorkspaceById.isLoading,
   };
 }

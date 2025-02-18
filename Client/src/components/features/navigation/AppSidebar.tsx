@@ -49,7 +49,7 @@ export default function AppSidebar({
         icon: ClipboardList,
         isActive: false,
         items:
-          workspaces?.data?.map((workspace) => ({
+          workspaces?.map((workspace) => ({
             title: workspace.name,
             url: `/app/workspaces/${workspace.id}`,
           })) || [],

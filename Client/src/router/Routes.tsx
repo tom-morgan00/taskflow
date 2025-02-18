@@ -39,8 +39,8 @@ export const router = createBrowserRouter([
     children: [
       { path: "", element: <>Dashboard</> },
       { path: "my-tasks", element: <>My Tasks</> },
-      { path: "workspaces/:id", element: <WorkspaceView /> },
       { path: "workspaces/", element: <WorkspaceList /> },
+      { path: "workspaces/:id", element: <WorkspaceView /> },
       { path: "notifications/", element: <>Notifications</> },
       { path: "account/", element: <>Account</> },
     ],

@@ -24,7 +24,7 @@ public class DbInit
             {
                 Name = "Design Homepage UI",
                 Description = "Create the initial wireframe for the homepage",
-                Status = TaskItemStatus.Todo,
+                Status = TaskItemStatus.ToDo,
                 DueDate = DateTime.Now.AddDays(7),
                 CreatedAt = DateTime.Now.AddMonths(-2),
                 WorkspaceId = workspace.Id,
@@ -51,7 +51,7 @@ public class DbInit
             {
                 Name = "Setup CI/CD Pipeline",
                 Description = "Automate deployment process using GitHub Actions",
-                Status = TaskItemStatus.Todo,
+                Status = TaskItemStatus.ToDo,
                 DueDate = DateTime.Now.AddDays(21),
                 CreatedAt = DateTime.Now.AddMonths(-1),
                 WorkspaceId = workspace.Id,

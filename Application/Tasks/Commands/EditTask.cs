@@ -2,6 +2,7 @@ using System;
 using Application.Tasks.DTOs;
 using AutoMapper;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using Persistence;
 
 namespace Application.Tasks.Commands;
@@ -22,12 +23,16 @@ public class EditTask
                     throw new Exception("Task not found");
                 }
                 mapper.Map(request.EditTaskDto, task);
+                var taskDto = mapper.Map<TaskDto>(task);
+                if (context.Entry(task).State == EntityState.Unchanged)
+                {
+                    return taskDto;
+                }
                 var result = await context.SaveChangesAsync(cancellationToken) > 0;
                 if (!result)
                 {
                     throw new Exception("Failed to update task");
                 }
-                var taskDto = mapper.Map<TaskDto>(task);
                 return taskDto;
             }
         }

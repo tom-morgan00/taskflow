@@ -23,12 +23,13 @@ import { Textarea } from "@/components/ui/textarea";
 import { useNavigate, useSearchParams } from "react-router";
 import { useEffect } from "react";
 import useTasks from "@/lib/hooks/useTasks";
+import { formatDate } from "@/lib/utils";
 
 const formSchema = z.object({
   name: z.string().min(1, "Name is required"),
   description: z.string().optional(),
   status: z.enum(["ToDo", "InProgress", "Done"]),
-  dueDate: z.string().min(1, "Due date is required"),
+  dueDate: z.string().optional().nullable(),
   workspaceId: z.string().min(1, "Workspace is required"),
 });
 
@@ -40,7 +41,7 @@ export default function TaskForm({ workspace }: Props) {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const taskId = searchParams.get("task") || undefined;
-  const { task, isLoadingTask } = useTasks(taskId);
+  const { task, isLoadingTask, createTask, editTask } = useTasks(taskId);
   const { isTaskFormOpen, setTaskFormOpen } = useStore();
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -49,7 +50,8 @@ export default function TaskForm({ workspace }: Props) {
       name: task?.name || "",
       description: task?.description || "",
       status: task?.status || "ToDo",
-      dueDate: task?.dueDate || new Date().toISOString().split("T")[0],
+      dueDate:
+        task?.dueDate && formatDate(new Date(task?.dueDate), "yyyy-MM-dd"),
       workspaceId: workspace.id || "",
     },
   });
@@ -61,7 +63,7 @@ export default function TaskForm({ workspace }: Props) {
         name: task.name,
         description: task.description,
         status: task.status,
-        dueDate: task.dueDate,
+        dueDate: task.dueDate && formatDate(task.dueDate, "yyyy-MM-dd"),
         workspaceId: task.workspaceId,
       });
     } else {
@@ -69,7 +71,7 @@ export default function TaskForm({ workspace }: Props) {
         name: "",
         description: "",
         status: "ToDo",
-        dueDate: new Date().toISOString().split("T")[0],
+        dueDate: undefined,
         workspaceId: workspace.id,
       });
     }
@@ -83,8 +85,13 @@ export default function TaskForm({ workspace }: Props) {
     }
   };
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    if (task) {
+      const data = { ...values, id: task.id } as Task;
+      await editTask.mutateAsync(data);
+    } else {
+      await createTask.mutateAsync(values as Task);
+    }
     closeTaskForm();
   }
 
@@ -121,10 +128,7 @@ export default function TaskForm({ workspace }: Props) {
                 <FormItem>
                   <FormLabel>Status</FormLabel>
                   <FormControl>
-                    <select
-                      {...field}
-                      className="w-full border rounded p-2" // Add styling if needed
-                    >
+                    <select {...field} className="w-full border rounded p-2">
                       <option value="ToDo">To Do</option>
                       <option value="InProgress">In Progress</option>
                       <option value="Done">Done</option>

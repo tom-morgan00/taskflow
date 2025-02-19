@@ -6,7 +6,7 @@ using Persistence;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
-builder.Services.AddDbContext<AppDbContext>(options => 
+builder.Services.AddDbContext<AppDbContext>(options =>
 {
     options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
@@ -16,7 +16,7 @@ builder.Services.AddAutoMapper(typeof(MappingProfiles).Assembly);
 
 var app = builder.Build();
 
-app.UseCors(options => options.AllowAnyHeader().WithOrigins("http://localhost:3000", "https://localhost:3000"));
+app.UseCors(options => options.AllowAnyHeader().AllowAnyMethod().WithOrigins("http://localhost:3000", "https://localhost:3000"));
 app.MapControllers();
 
 using var scope = app.Services.CreateScope();

@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import useTasks from "@/lib/hooks/useTasks";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -13,6 +14,7 @@ type Props = {
 };
 
 export default function TaskOptions({ task }: Props) {
+  const { deleteTask } = useTasks();
   const navigate = useNavigate();
   return (
     <DropdownMenu>
@@ -30,7 +32,9 @@ export default function TaskOptions({ task }: Props) {
         >
           Edit task
         </DropdownMenuItem>
-        <DropdownMenuItem>Delete task</DropdownMenuItem>
+        <DropdownMenuItem onClick={() => deleteTask.mutate(task.id)}>
+          Delete task
+        </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );

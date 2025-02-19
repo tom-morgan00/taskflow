@@ -12,5 +12,8 @@ public class MappingProfiles : Profile
     {
         CreateMap<CreateWorkspaceDto, Workspace>();
         CreateMap<CreateTaskDto, TaskItem>();
+        CreateMap<Workspace, WorkspaceDto>();
+        CreateMap<Workspace, WorkspaceDetailsDto>();
+        CreateMap<TaskItem, TaskDto>();
     }
 }

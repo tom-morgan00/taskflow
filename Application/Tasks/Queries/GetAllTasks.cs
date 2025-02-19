@@ -1,5 +1,6 @@
 using System;
-using Domain;
+using Application.Tasks.DTOs;
+using AutoMapper;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
@@ -8,13 +9,15 @@ namespace Application.Tasks.Queries;
 
 public class GetAllTasks
 {
-    public class Query : IRequest<List<TaskItem>> {}
+    public class Query : IRequest<List<TaskDto>> { }
 
-    public class Handler(AppDbContext context) : IRequestHandler<Query, List<TaskItem>>
+    public class Handler(AppDbContext context, IMapper mapper) : IRequestHandler<Query, List<TaskDto>>
     {
-        public async Task<List<TaskItem>> Handle(Query request, CancellationToken cancellationToken)
+        public async Task<List<TaskDto>> Handle(Query request, CancellationToken cancellationToken)
         {
-            return await context.Tasks.ToListAsync(cancellationToken);
+            var tasks = await context.Tasks.ToListAsync(cancellationToken);
+            var taskDtos = mapper.Map<List<TaskDto>>(tasks);
+            return taskDtos;
         }
     }
 }

@@ -11,14 +11,14 @@ namespace API.Controllers
     public class WorkspacesController : BaseApiController
     {
         [HttpGet]
-        public async Task<ActionResult<List<Workspace>>> GetAllWorkspaces()
+        public async Task<ActionResult<List<WorkspaceDto>>> GetAllWorkspaces()
         {
             var workspaces = await Mediator.Send(new GetAllWorkspaces.Query());
             return Ok(workspaces);
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<Workspace>> GetWorkspaceById(string id)
+        public async Task<ActionResult<WorkspaceDetailsDto>> GetWorkspaceById(string id)
         {
             var workspace = await Mediator.Send(new GetWorkspaceById.Query { Id = id });
             return Ok(workspace);

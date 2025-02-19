@@ -1,7 +1,6 @@
 using Application.Workspaces.Commands;
 using Application.Workspaces.DTOs;
 using Application.Workspaces.Queries;
-using Domain;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
@@ -25,10 +24,24 @@ namespace API.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<Workspace>> CreateWorkspace(CreateWorkspaceDto createWorkspaceDto)
+        public async Task<ActionResult<WorkspaceDto>> CreateWorkspace(CreateWorkspaceDto createWorkspaceDto)
         {
             var workspace = await Mediator.Send(new CreateWorkspace.Command { CreateWorkspaceDto = createWorkspaceDto });
             return Ok(workspace);
+        }
+
+        [HttpPut]
+        public async Task<ActionResult<WorkspaceDto>> EditWorkspace(EditWorkspaceDto editWorkspaceDto)
+        {
+            var workspace = await Mediator.Send(new EditWorkspace.Command { EditWorkspaceDto = editWorkspaceDto });
+            return Ok(workspace);
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<ActionResult<string>> DeleteWorkspace(string id)
+        {
+            var message = await Mediator.Send(new DeleteWorkspace.Command { Id = id });
+            return Ok(message);
         }
     }
 }

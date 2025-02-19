@@ -1,7 +1,6 @@
 using Application.Tasks.Commands;
 using Application.Tasks.DTOs;
 using Application.Tasks.Queries;
-using Domain;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
@@ -25,10 +24,24 @@ namespace API.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<TaskItem>> CreateTask(CreateTaskDto createTaskDto)
+        public async Task<ActionResult<TaskDto>> CreateTask(CreateTaskDto createTaskDto)
         {
             var task = await Mediator.Send(new CreateTask.Command { CreateTaskDto = createTaskDto });
             return Ok(task);
+        }
+
+        [HttpPut]
+        public async Task<ActionResult<TaskDto>> EditTask(EditTaskDto editTaskDto)
+        {
+            var task = await Mediator.Send(new EditTask.Command { EditTaskDto = editTaskDto });
+            return Ok(task);
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<ActionResult<string>> DeleteTask(string id)
+        {
+            var message = await Mediator.Send(new DeleteTask.Command { Id = id });
+            return Ok(message);
         }
     }
 }

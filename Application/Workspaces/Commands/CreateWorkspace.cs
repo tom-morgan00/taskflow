@@ -9,18 +9,19 @@ namespace Application.Workspaces.Commands;
 
 public class CreateWorkspace
 {
-    public class Command: IRequest<Workspace>
+    public class Command : IRequest<WorkspaceDto>
     {
         public required CreateWorkspaceDto CreateWorkspaceDto { get; set; }
 
-        public class Handler(AppDbContext context, IMapper mapper) : IRequestHandler<Command, Workspace>
+        public class Handler(AppDbContext context, IMapper mapper) : IRequestHandler<Command, WorkspaceDto>
         {
-            public async Task<Workspace> Handle(Command request, CancellationToken cancellationToken)
+            public async Task<WorkspaceDto> Handle(Command request, CancellationToken cancellationToken)
             {
                 var newWorkspace = mapper.Map<Workspace>(request.CreateWorkspaceDto);
                 context.Workspaces.Add(newWorkspace);
                 await context.SaveChangesAsync(cancellationToken);
-                return newWorkspace;
+                var workspaceDto = mapper.Map<WorkspaceDto>(newWorkspace);
+                return workspaceDto;
             }
         }
     }

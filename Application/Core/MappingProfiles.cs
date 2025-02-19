@@ -10,10 +10,12 @@ public class MappingProfiles : Profile
 {
     public MappingProfiles()
     {
-        CreateMap<CreateWorkspaceDto, Workspace>();
-        CreateMap<CreateTaskDto, TaskItem>();
         CreateMap<Workspace, WorkspaceDto>();
         CreateMap<Workspace, WorkspaceDetailsDto>();
         CreateMap<TaskItem, TaskDto>();
+        CreateMap<CreateWorkspaceDto, Workspace>();
+        CreateMap<CreateTaskDto, TaskItem>();
+        CreateMap<EditWorkspaceDto, Workspace>();
+        CreateMap<EditTaskDto, TaskItem>();
     }
 }

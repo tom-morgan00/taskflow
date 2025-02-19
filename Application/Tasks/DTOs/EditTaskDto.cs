@@ -2,7 +2,7 @@ using System;
 
 namespace Application.Tasks.DTOs;
 
-public class TaskDto
+public class EditTaskDto
 {
     public string Id { get; set; } = "";
     public string Name { get; set; } = "";
@@ -10,5 +10,4 @@ public class TaskDto
     public DateTime DueDate { get; set; }
     public string Status { get; set; } = "";
     public string WorkspaceId { get; set; } = "";
-    public DateTime CreatedAt { get; set; }
 }

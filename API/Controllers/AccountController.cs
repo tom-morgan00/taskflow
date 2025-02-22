@@ -1,6 +1,7 @@
 using System;
 using Application.Users.DTOs;
 using Domain;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,6 +10,7 @@ namespace API.Controllers;
 public class AccountController(SignInManager<User> signInManager) : BaseApiController
 {
 
+    [AllowAnonymous]
     [HttpPost("register")]
     public async Task<ActionResult> RegisterUser(RegisterUserDto registerUserDto)
     {
@@ -34,6 +36,7 @@ public class AccountController(SignInManager<User> signInManager) : BaseApiContr
         return ValidationProblem();
     }
 
+    [AllowAnonymous]
     [HttpGet("user")]
     public async Task<ActionResult> GetUser()
     {

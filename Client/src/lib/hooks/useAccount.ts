@@ -45,6 +45,9 @@ export default function useAccount() {
       });
       navigate("/auth/login");
     },
+    onError: () => {
+      navigate("/auth/login");
+    },
   });
 
   const { data: currentUser, isLoading: loadingUser } = useQuery({

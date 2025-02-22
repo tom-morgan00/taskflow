@@ -1,32 +1,103 @@
-import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { useForm } from "react-hook-form";
+import { registerSchema, RegisterSchema } from "@/lib/schemas/loginSchema";
+import { zodResolver } from "@hookform/resolvers/zod";
+import useAccount from "@/lib/hooks/useAccount";
 
-export default function SignupForm({
-  className,
-  ...props
-}: React.ComponentProps<"form">) {
+export default function SignupForm() {
+  const navigate = useNavigate();
+  const { registerUser } = useAccount();
+  const form = useForm<RegisterSchema>({
+    mode: "onChange",
+    resolver: zodResolver(registerSchema),
+  });
+
+  async function onSubmit(values: RegisterSchema) {
+    console.log("submitting: ", values);
+    await registerUser.mutateAsync(values, {
+      onSuccess: () => {
+        navigate("/app");
+      },
+      onError: (err) => {
+        console.log("error", err);
+      },
+    });
+  }
+
   return (
-    <form className={cn("flex flex-col gap-6", className)} {...props}>
-      <div className="flex flex-col items-center gap-2 text-center">
-        <h1 className="text-2xl font-bold">Create your new account</h1>
-        <p className="text-muted-foreground text-sm text-balance">
-          Enter your email below to create your new account
-        </p>
-      </div>
-      <div className="grid gap-6">
-        <div className="grid gap-3">
-          <Label htmlFor="email">Email</Label>
-          <Input id="email" type="email" placeholder="m@example.com" required />
+    <Form {...form}>
+      <form
+        onSubmit={form.handleSubmit(onSubmit)}
+        className="flex flex-col gap-6"
+      >
+        <div className="flex flex-col items-center gap-2 text-center">
+          <h1 className="text-2xl font-bold">Create your new account</h1>
+          <p className="text-muted-foreground text-sm text-balance">
+            Enter your details to create your new account
+          </p>
         </div>
-        <div className="grid gap-3">
-          <div className="flex items-center">
-            <Label htmlFor="password">Password</Label>
-          </div>
-          <Input id="password" type="password" required />
-        </div>
+        <FormField
+          control={form.control}
+          name="displayName"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Name</FormLabel>
+              <FormControl>
+                <Input placeholder="Enter name" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="email"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Email</FormLabel>
+              <FormControl>
+                <Input placeholder="Enter email" type="email" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="password"
+          render={({ field }) => (
+            <FormItem>
+              <div className="flex items-center">
+                <FormLabel htmlFor="password">Password</FormLabel>
+                <Link
+                  to="/auth/forgot-password"
+                  className="ml-auto text-sm underline-offset-4 hover:underline"
+                >
+                  Forgot your password?
+                </Link>
+              </div>
+              <FormControl>
+                <Input
+                  placeholder="Enter password"
+                  type="password"
+                  {...field}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
         <Button type="submit" className="w-full">
           Sign up
         </Button>
@@ -42,15 +113,15 @@ export default function SignupForm({
               fill="currentColor"
             />
           </svg>
-          Sign up with GitHub
+          Continue with GitHub
         </Button>
-      </div>
-      <div className="text-center text-sm">
-        Already have an account?{" "}
-        <Link to="/auth/login" className="underline underline-offset-4">
-          Log in
-        </Link>
-      </div>
-    </form>
+        <div className="text-center text-sm">
+          Already have an account?{" "}
+          <Link to="/auth/login" className="underline underline-offset-4">
+            Log in
+          </Link>
+        </div>
+      </form>
+    </Form>
   );
 }

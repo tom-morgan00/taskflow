@@ -21,7 +21,10 @@ public class AccountController(SignInManager<User> signInManager) : BaseApiContr
 
         var result = await signInManager.UserManager.CreateAsync(user, registerUserDto.Password);
 
-        if (result.Succeeded) return Ok();
+        if (result.Succeeded)
+        {
+            return Ok();
+        }
 
         foreach (var error in result.Errors)
         {

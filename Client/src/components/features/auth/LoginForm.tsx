@@ -1,38 +1,90 @@
-import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { useForm } from "react-hook-form";
+import { loginSchema, LoginSchema } from "@/lib/schemas/loginSchema";
+import { zodResolver } from "@hookform/resolvers/zod";
+import useAccount from "@/lib/hooks/useAccount";
 
-export default function LoginForm({
-  className,
-  ...props
-}: React.ComponentProps<"form">) {
+export default function LoginForm() {
+  const navigate = useNavigate();
+  const { loginUser } = useAccount();
+  const form = useForm<LoginSchema>({
+    mode: "onChange",
+    resolver: zodResolver(loginSchema),
+  });
+
+  async function onSubmit(values: LoginSchema) {
+    console.log("submitting: ", values);
+    await loginUser.mutateAsync(values, {
+      onSuccess: () => {
+        navigate("/app");
+      },
+      onError: (err) => {
+        console.log("error", err);
+      },
+    });
+  }
+
   return (
-    <form className={cn("flex flex-col gap-6", className)} {...props}>
-      <div className="flex flex-col items-center gap-2 text-center">
-        <h1 className="text-2xl font-bold">Log in to your account</h1>
-        <p className="text-muted-foreground text-sm text-balance">
-          Enter your email below to log in to your account
-        </p>
-      </div>
-      <div className="grid gap-6">
-        <div className="grid gap-3">
-          <Label htmlFor="email">Email</Label>
-          <Input id="email" type="email" placeholder="m@example.com" required />
+    <Form {...form}>
+      <form
+        onSubmit={form.handleSubmit(onSubmit)}
+        className="flex flex-col gap-6"
+      >
+        <div className="flex flex-col items-center gap-2 text-center">
+          <h1 className="text-2xl font-bold">Log in to your account</h1>
+          <p className="text-muted-foreground text-sm text-balance">
+            Enter your email below to log in to your account
+          </p>
         </div>
-        <div className="grid gap-3">
-          <div className="flex items-center">
-            <Label htmlFor="password">Password</Label>
-            <Link
-              to="/auth/forgot-password"
-              className="ml-auto text-sm underline-offset-4 hover:underline"
-            >
-              Forgot your password?
-            </Link>
-          </div>
-          <Input id="password" type="password" required />
-        </div>
+        <FormField
+          control={form.control}
+          name="email"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Email</FormLabel>
+              <FormControl>
+                <Input placeholder="Enter email" type="email" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="password"
+          render={({ field }) => (
+            <FormItem>
+              <div className="flex items-center">
+                <FormLabel htmlFor="password">Password</FormLabel>
+                <Link
+                  to="/auth/forgot-password"
+                  className="ml-auto text-sm underline-offset-4 hover:underline"
+                >
+                  Forgot your password?
+                </Link>
+              </div>
+              <FormControl>
+                <Input
+                  placeholder="Enter password"
+                  type="password"
+                  {...field}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
         <Button type="submit" className="w-full">
           Log in
         </Button>
@@ -50,13 +102,13 @@ export default function LoginForm({
           </svg>
           Log in with GitHub
         </Button>
-      </div>
-      <div className="text-center text-sm">
-        Don&apos;t have an account?{" "}
-        <Link to="/auth/signup" className="underline underline-offset-4">
-          Sign up
-        </Link>
-      </div>
-    </form>
+        <div className="text-center text-sm">
+          Don&apos;t have an account?{" "}
+          <Link to="/auth/signup" className="underline underline-offset-4">
+            Sign up
+          </Link>
+        </div>
+      </form>
+    </Form>
   );
 }

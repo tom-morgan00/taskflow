@@ -14,3 +14,14 @@ type Workspace = {
   createdAt: string;
   tasks: Task[];
 };
+
+type User = {
+  id: string;
+  displayName: string;
+  email: string;
+  imageUrl?: string;
+  bio?: string;
+  phoneNumber?: string;
+  phoneNumberConfirmed: boolean;
+  emailConfirmed: boolean;
+};

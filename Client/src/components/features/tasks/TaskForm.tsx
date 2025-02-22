@@ -28,7 +28,7 @@ import { useNavigate } from "react-router";
 import { useEffect } from "react";
 import useTasks from "@/lib/hooks/useTasks";
 import { cn, formatDate } from "@/lib/utils";
-import { formSchema, FormSchema } from "@/lib/schemas/schema";
+import { formSchema, FormSchema } from "@/lib/schemas/activitySchema";
 import { CalendarIcon } from "lucide-react";
 import { Calendar } from "@/components/ui/calendar";
 import {

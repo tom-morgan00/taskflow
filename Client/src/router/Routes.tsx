@@ -7,6 +7,7 @@ import ForgotPasswordForm from "@/components/features/auth/ForgotPasswordForm";
 import WorkspaceList from "@/components/features/workspaces/WorkspaceList";
 import WorkspaceView from "@/components/features/workspaces/WorkspaceView";
 import BearTest from "@/components/features/BearTest";
+import Logout from "@/components/features/auth/Logout";
 
 export const router = createBrowserRouter([
   {
@@ -23,14 +24,7 @@ export const router = createBrowserRouter([
       { path: "reset-password", element: <>Reset password</> },
       {
         path: "logout",
-        element: (
-          <div className="flex flex-col gap-2 items-center">
-            <h1 className="text-2xl font-bold">Logging out...</h1>
-            <Link to="/auth/login" className="underline underline-offset-4">
-              Log in
-            </Link>
-          </div>
-        ),
+        element: <Logout />,
       },
     ],
   },

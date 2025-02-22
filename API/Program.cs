@@ -28,7 +28,7 @@ builder.Services.AddIdentityApiEndpoints<User>(options =>
 
 var app = builder.Build();
 
-app.UseCors(options => options.AllowAnyHeader().AllowAnyMethod().WithOrigins("http://localhost:3000", "https://localhost:3000"));
+app.UseCors(options => options.AllowAnyHeader().AllowAnyMethod().AllowCredentials().WithOrigins("http://localhost:3000", "https://localhost:3000"));
 app.UseAuthentication();
 app.UseAuthorization();
 

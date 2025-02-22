@@ -1,6 +1,7 @@
 using System;
 using Application.Tasks.DTOs;
 using Application.Workspaces.DTOs;
+using Application.Users.DTOs;
 using AutoMapper;
 using Domain;
 
@@ -17,5 +18,7 @@ public class MappingProfiles : Profile
         CreateMap<CreateTaskDto, TaskItem>();
         CreateMap<EditWorkspaceDto, Workspace>();
         CreateMap<EditTaskDto, TaskItem>();
+
+        CreateMap<User, UserDto>();
     }
 }

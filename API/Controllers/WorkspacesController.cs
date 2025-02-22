@@ -1,6 +1,7 @@
 using Application.Workspaces.Commands;
 using Application.Workspaces.DTOs;
 using Application.Workspaces.Queries;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers

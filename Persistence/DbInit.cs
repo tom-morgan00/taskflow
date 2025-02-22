@@ -1,13 +1,44 @@
 using System;
 using Domain;
+using Microsoft.AspNetCore.Identity;
 
 namespace Persistence;
 
 public class DbInit
 {
 
-    public static async Task SeedData(AppDbContext context)
+    public static async Task SeedData(AppDbContext context, UserManager<User> userManager)
     {
+        if (!userManager.Users.Any())
+        {
+            var users = new List<User> {
+
+            new() {
+                DisplayName = "Tom",
+                Email = "thomas.morgan1903@gmail.com",
+                UserName = "thomas.morgan1903@gmail.com",
+                Bio = "I am a software developer",
+                ImageUrl = "https://static.wikia.nocookie.net/disney/images/8/81/Danny_Trejo.jpg"
+            },
+            new () {
+                DisplayName = "Tia",
+                Email = "thomas.morgan1903+tia@gmail.com",
+                UserName = "thomas.morgan1903+tia@gmail.com",
+                Bio = "I am a teacher",
+                ImageUrl = "https://cdn.britannica.com/16/221316-050-680EBB62/Steve-Buscemi-2012.jpg"
+            },
+            }
+            ;
+
+            foreach (User user in users)
+            {
+                await userManager.CreateAsync(user, "Password123!");
+
+            }
+
+        }
+        ;
+
         if (context.Tasks.Any()) return;
 
         var workspace = new Workspace

@@ -1,4 +1,5 @@
 using System;
+using Application.Core;
 using Application.Tasks.DTOs;
 using AutoMapper;
 using Domain;
@@ -9,24 +10,24 @@ namespace Application.Tasks.Commands;
 
 public class CreateTask
 {
-    public class Command : IRequest<TaskDto>
+    public class Command : IRequest<Result<TaskDto>>
     {
         public required CreateTaskDto CreateTaskDto { get; set; }
 
-        public class Handler(AppDbContext context, IMapper mapper) : IRequestHandler<Command, TaskDto>
+        public class Handler(AppDbContext context, IMapper mapper) : IRequestHandler<Command, Result<TaskDto>>
         {
-            public async Task<TaskDto> Handle(Command request, CancellationToken cancellationToken)
+            public async Task<Result<TaskDto>> Handle(Command request, CancellationToken cancellationToken)
             {
                 var workspace = await context.Workspaces.FindAsync(request.CreateTaskDto.WorkspaceId, cancellationToken);
                 if (workspace == null)
                 {
-                    throw new Exception("Workspace not found");
+                    return Result<TaskDto>.Failure("Workspace not found", 404);
                 }
                 var newTask = mapper.Map<TaskItem>(request.CreateTaskDto);
                 context.Tasks.Add(newTask);
                 await context.SaveChangesAsync(cancellationToken);
                 var taskDto = mapper.Map<TaskDto>(newTask);
-                return taskDto;
+                return Result<TaskDto>.Success(taskDto);
             }
         }
     }

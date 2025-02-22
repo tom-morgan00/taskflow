@@ -1,4 +1,5 @@
 using System;
+using Application.Core;
 using Application.Tasks.DTOs;
 using AutoMapper;
 using MediatR;
@@ -9,15 +10,15 @@ namespace Application.Tasks.Queries;
 
 public class GetAllTasks
 {
-    public class Query : IRequest<List<TaskDto>> { }
+    public class Query : IRequest<Result<List<TaskDto>>> { }
 
-    public class Handler(AppDbContext context, IMapper mapper) : IRequestHandler<Query, List<TaskDto>>
+    public class Handler(AppDbContext context, IMapper mapper) : IRequestHandler<Query, Result<List<TaskDto>>>
     {
-        public async Task<List<TaskDto>> Handle(Query request, CancellationToken cancellationToken)
+        public async Task<Result<List<TaskDto>>> Handle(Query request, CancellationToken cancellationToken)
         {
             var tasks = await context.Tasks.ToListAsync(cancellationToken);
             var taskDtos = mapper.Map<List<TaskDto>>(tasks);
-            return taskDtos;
+            return Result<List<TaskDto>>.Success(taskDtos);
         }
     }
 }

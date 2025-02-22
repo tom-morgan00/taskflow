@@ -23,11 +23,11 @@ export default function useTasks(id?: string) {
   const createTask = useMutation({
     mutationFn: async (task: Task) => {
       const result = await agent.post<Task>(`/tasks`, task);
-      console.log(result.data);
+      return result.data;
     },
-    onSuccess: async () => {
-      await queryClient.invalidateQueries({
-        queryKey: ["tasks"],
+    onSuccess: (task) => {
+      queryClient.invalidateQueries({
+        queryKey: ["workspaces", task.workspaceId],
       });
     },
   });
@@ -35,11 +35,11 @@ export default function useTasks(id?: string) {
   const editTask = useMutation({
     mutationFn: async (task: Task) => {
       const result = await agent.put<Task>(`/tasks`, task);
-      console.log(result.data);
+      return result.data;
     },
-    onSuccess: async () => {
-      await queryClient.invalidateQueries({
-        queryKey: ["tasks"],
+    onSuccess: (task) => {
+      queryClient.invalidateQueries({
+        queryKey: ["workspaces", task.workspaceId],
       });
     },
   });
@@ -49,9 +49,9 @@ export default function useTasks(id?: string) {
       const result = await agent.delete<Task>(`/tasks/${id}`);
       console.log(result.data);
     },
-    onSuccess: async () => {
-      await queryClient.invalidateQueries({
-        queryKey: ["tasks"],
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["workspaces"],
       });
     },
   });

@@ -3,7 +3,7 @@ type Task = {
   name: string;
   description?: string;
   status: "ToDo" | "InProgress" | "Done";
-  dueDate?: string;
+  dueDate?: Date;
   createdAt: string;
   workspaceId: string;
 };

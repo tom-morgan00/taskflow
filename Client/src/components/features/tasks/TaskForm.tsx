@@ -1,6 +1,5 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import {
   FormField,
@@ -10,6 +9,11 @@ import {
   FormMessage,
   Form,
 } from "@/components/ui/form";
+import {
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+} from "@/components/ui/popover";
 import { Input } from "@/components/ui/input";
 import {
   Dialog,
@@ -20,88 +24,89 @@ import {
 } from "@/components/ui/dialog";
 import { useStore } from "@/lib/store";
 import { Textarea } from "@/components/ui/textarea";
-import { useNavigate, useSearchParams } from "react-router";
+import { useNavigate } from "react-router";
 import { useEffect } from "react";
 import useTasks from "@/lib/hooks/useTasks";
-import { formatDate } from "@/lib/utils";
-
-const formSchema = z.object({
-  name: z.string().min(1, "Name is required"),
-  description: z.string().optional(),
-  status: z.enum(["ToDo", "InProgress", "Done"]),
-  dueDate: z.string().optional().nullable(),
-  workspaceId: z.string().min(1, "Workspace is required"),
-});
+import { cn, formatDate } from "@/lib/utils";
+import { formSchema, FormSchema } from "@/lib/schemas/schema";
+import { CalendarIcon } from "lucide-react";
+import { Calendar } from "@/components/ui/calendar";
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
+} from "@/components/ui/select";
 
 type Props = {
   workspace: Workspace;
+  taskId?: string;
+  editMode: boolean;
 };
 
-export default function TaskForm({ workspace }: Props) {
-  const [searchParams] = useSearchParams();
+export default function TaskForm({ workspace, taskId, editMode }: Props) {
   const navigate = useNavigate();
-  const taskId = searchParams.get("task") || undefined;
-  const { task, isLoadingTask, createTask, editTask } = useTasks(taskId);
-  const { isTaskFormOpen, setTaskFormOpen } = useStore();
+  const { isTaskFormOpen, closeTaskForm } = useStore();
+  const { task, createTask, editTask } = useTasks(taskId);
 
-  const form = useForm<z.infer<typeof formSchema>>({
+  console.log("Task changed...", task);
+
+  const form = useForm<FormSchema>({
+    mode: "onChange",
     resolver: zodResolver(formSchema),
-    defaultValues: {
-      name: task?.name || "",
-      description: task?.description || "",
-      status: task?.status || "ToDo",
-      dueDate:
-        task?.dueDate && formatDate(new Date(task?.dueDate), "yyyy-MM-dd"),
-      workspaceId: workspace.id || "",
-    },
   });
 
   useEffect(() => {
     if (task) {
-      setTaskFormOpen(true);
       form.reset({
-        name: task.name,
-        description: task.description,
-        status: task.status,
-        dueDate: task.dueDate && formatDate(task.dueDate, "yyyy-MM-dd"),
-        workspaceId: task.workspaceId,
+        ...task,
+        dueDate: task.dueDate,
       });
     } else {
+      console.log("Resetting form...");
       form.reset({
         name: "",
-        description: "",
         status: "ToDo",
         dueDate: undefined,
+        description: "",
         workspaceId: workspace.id,
       });
     }
-  }, [task, form, workspace, setTaskFormOpen]);
+  }, [task, form, workspace]);
 
-  const closeTaskForm = () => {
-    setTaskFormOpen(false);
-    form.reset();
-    if (task) {
-      navigate(`/app/workspaces/${workspace.id}`, { replace: true });
-    }
-  };
-
-  async function onSubmit(values: z.infer<typeof formSchema>) {
+  async function onSubmit(values: FormSchema) {
+    console.log("submitting: ", values);
     if (task) {
       const data = { ...values, id: task.id } as Task;
       await editTask.mutateAsync(data);
     } else {
       await createTask.mutateAsync(values as Task);
     }
-    closeTaskForm();
+    handleCloseForm();
   }
 
+  const handleCloseForm = () => {
+    if (task) {
+      navigate(`/app/workspaces/${workspace.id}`, { replace: true });
+    }
+    form.reset({
+      name: "",
+      status: "ToDo",
+      dueDate: undefined,
+      description: "",
+      workspaceId: workspace.id,
+    });
+    closeTaskForm();
+  };
+
   return (
-    <Dialog open={isTaskFormOpen} onOpenChange={closeTaskForm}>
+    <Dialog open={isTaskFormOpen} onOpenChange={handleCloseForm}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>{task ? "Edit task" : "Create task"}</DialogTitle>
+          <DialogTitle>{editMode ? "Edit task" : "Create task"}</DialogTitle>
           <DialogDescription>
-            {task
+            {editMode
               ? "Enter details and update task"
               : "Enter details to create a new task"}
           </DialogDescription>
@@ -121,36 +126,71 @@ export default function TaskForm({ workspace }: Props) {
                 </FormItem>
               )}
             />
-            <FormField
-              control={form.control}
-              name="status"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Status</FormLabel>
-                  <FormControl>
-                    <select {...field} className="w-full border rounded p-2">
-                      <option value="ToDo">To Do</option>
-                      <option value="InProgress">In Progress</option>
-                      <option value="Done">Done</option>
-                    </select>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="dueDate"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Due Date</FormLabel>
-                  <FormControl>
-                    <Input type="date" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            <div className="flex gap-3">
+              <FormField
+                control={form.control}
+                name="status"
+                render={({ field }) => (
+                  <FormItem className="w-full">
+                    <FormLabel>Status</FormLabel>
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                    >
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select status" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="ToDo">To Do</SelectItem>
+                        <SelectItem value="InProgress">In Progress</SelectItem>
+                        <SelectItem value="Done">Done</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="dueDate"
+                render={({ field }) => (
+                  <FormItem className="flex flex-col w-full">
+                    <FormLabel>Due date</FormLabel>
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <FormControl>
+                          <Button
+                            variant={"outline"}
+                            className={cn(
+                              "w-[240px] pl-3 text-left font-normal",
+                              !field.value && "text-muted-foreground"
+                            )}
+                          >
+                            {field.value ? (
+                              formatDate(field.value, "yyyy-MM-dd")
+                            ) : (
+                              <span>Pick a date</span>
+                            )}
+                            <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                          </Button>
+                        </FormControl>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-auto p-0" align="start">
+                        <Calendar
+                          mode="single"
+                          selected={field.value || undefined}
+                          onSelect={field.onChange}
+                          initialFocus
+                        />
+                      </PopoverContent>
+                    </Popover>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
             <FormField
               control={form.control}
               name="description"
@@ -161,7 +201,7 @@ export default function TaskForm({ workspace }: Props) {
                     <Textarea
                       placeholder="Enter description"
                       {...field}
-                      className="resize-none min-h-[80px]" // Optional: prevent resizing
+                      className="resize-none min-h-[80px]"
                     />
                   </FormControl>
                   <FormMessage />
@@ -169,7 +209,7 @@ export default function TaskForm({ workspace }: Props) {
               )}
             />
             <div className="flex gap-2 justify-end">
-              <Button type="button" variant="outline" onClick={closeTaskForm}>
+              <Button type="button" variant="outline" onClick={handleCloseForm}>
                 Cancel
               </Button>
               <Button type="submit">Submit</Button>

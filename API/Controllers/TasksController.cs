@@ -12,36 +12,31 @@ namespace API.Controllers
         [HttpGet]
         public async Task<ActionResult<List<TaskDto>>> GetAllTasks()
         {
-            var tasks = await Mediator.Send(new GetAllTasks.Query());
-            return Ok(tasks);
+            return HandleResult(await Mediator.Send(new GetAllTasks.Query()));
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<TaskDto>> GetTaskById(string id)
         {
-            var task = await Mediator.Send(new GetTaskById.Query { Id = id });
-            return Ok(task);
+            return HandleResult(await Mediator.Send(new GetTaskById.Query { Id = id }));
         }
 
         [HttpPost]
         public async Task<ActionResult<TaskDto>> CreateTask(CreateTaskDto createTaskDto)
         {
-            var task = await Mediator.Send(new CreateTask.Command { CreateTaskDto = createTaskDto });
-            return Ok(task);
+            return HandleResult(await Mediator.Send(new CreateTask.Command { CreateTaskDto = createTaskDto }));
         }
 
         [HttpPut]
         public async Task<ActionResult<TaskDto>> EditTask(EditTaskDto editTaskDto)
         {
-            var task = await Mediator.Send(new EditTask.Command { EditTaskDto = editTaskDto });
-            return Ok(task);
+            return HandleResult(await Mediator.Send(new EditTask.Command { EditTaskDto = editTaskDto }));
         }
 
         [HttpDelete("{id}")]
         public async Task<ActionResult<string>> DeleteTask(string id)
         {
-            var message = await Mediator.Send(new DeleteTask.Command { Id = id });
-            return Ok(message);
+            return HandleResult(await Mediator.Send(new DeleteTask.Command { Id = id }));
         }
     }
 }

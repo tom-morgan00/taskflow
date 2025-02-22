@@ -1,6 +1,7 @@
 import { ColumnDef } from "@tanstack/react-table";
 import TaskOptions from "./TaskOptions";
 import { formatDate } from "@/lib/utils";
+import { Badge } from "@/components/ui/badge";
 
 export const columns: ColumnDef<Task>[] = [
   {
@@ -10,6 +11,22 @@ export const columns: ColumnDef<Task>[] = [
   {
     accessorKey: "status",
     header: "Status",
+    cell: ({ row }) => {
+      const status = row.original.status;
+      return (
+        <Badge
+          variant={
+            status === "Done"
+              ? "secondary"
+              : status === "InProgress"
+              ? "default"
+              : "outline"
+          }
+        >
+          {row.original.status}
+        </Badge>
+      );
+    },
   },
   {
     accessorKey: "dueDate",
